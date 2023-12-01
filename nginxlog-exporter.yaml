@@ -1,5 +1,5 @@
 listen: # exporter监听配置(指标输出)
-  port: 7788 # 服务端口
+  port: 4040 # 服务端口
   address: "0.0.0.0" # 服务地址
   metrics_endpoint: "/metrics" # 指标输出路径
 

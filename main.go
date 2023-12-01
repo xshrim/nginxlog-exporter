@@ -59,7 +59,7 @@ func main() {
 	}
 
 	versionMetrics := prometheus.NewRegistry()
-	versionMetrics.MustRegister(version.NewCollector("prometheus_nginxlog_exporter"))
+	versionMetrics.MustRegister(version.NewCollector("nginxlog_exporter"))
 
 	gatherers := prometheus.Gatherers{versionMetrics}
 

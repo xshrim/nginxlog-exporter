@@ -17,9 +17,37 @@ CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o nginxlog-exporter main.go
 
 ## ## 运行
 
-```shell
-./nginxlog-exporter -config-file nginxlog-exporter.yaml
-```
+1. 二进制执行
+
+   ```bash
+   chmod a+x nginxlog-exporter
+   ./nginxlog-exporter -config-file nginxlog-exporter.yaml
+   ```
+2. 作为服务执行
+
+   ```bash
+   cat > /etc/systemd/system/nginxlog-exporter.service <<EOF
+   [Unit]
+   Description=NGINX metrics exporter for Prometheus
+   After=network-online.target
+
+   [Service]
+   ExecStart=/usr/local/bin/nginxlog-exporter -config-file /etc/nginxlog-exporter.yaml
+   ExecReload=/bin/kill -HUP $MAINPID
+   Restart=always
+   ProtectSystem=no
+   CapabilityBoundingSet=
+
+   [Install]
+   WantedBy=multi-user.target
+   EOF
+
+   chmod a+x nginxlog-exporter
+   mv nginxlog-exporter /usr/local/bin/
+   mv nginxlog-exporter.yaml /etc/nginxlog-exporter.yaml
+   mv nginxlog-exporter.service /etc/systemd/system
+   systemctl start nginxlog-exporter
+   ```
 
 ## 用法
 
@@ -29,7 +57,7 @@ CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o nginxlog-exporter main.go
 
 ```yaml
 listen: # exporter监听配置(指标输出)
-  port: 7788 # 服务端口
+  port: 4040 # 服务端口
   address: "0.0.0.0" # 服务地址
   metrics_endpoint: "/metrics" # 指标输出路径
 
