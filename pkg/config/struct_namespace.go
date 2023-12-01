@@ -2,11 +2,10 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"path/filepath"
 	"sort"
 	"strings"
-
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/log"
 )
 
 // NamespaceConfig is a struct describing single metric namespaces
@@ -26,6 +25,8 @@ type NamespaceConfig struct {
 	Parser           string            `hcl:"parser" yaml:"parser"`
 	Format           string            `hcl:"format" yaml:"format"`
 	Labels           map[string]string `hcl:"labels" yaml:"labels"`
+	Domains          []string          `hcl:"domains" yaml:"domains"`
+	FilterConfigs    []FilterConfig    `hcl:"filter" yaml:"filter_configs"`
 	RelabelConfigs   []RelabelConfig   `hcl:"relabel" yaml:"relabel_configs"`
 	HistogramBuckets []float64         `hcl:"histogram_buckets" yaml:"histogram_buckets"`
 
@@ -83,7 +84,7 @@ func (c *NamespaceConfig) ResolveDeprecations() {
 
 // ResolveGlobs finds globs in file sources and expand them to the actual
 // list of files
-func (c *NamespaceConfig) ResolveGlobs(logger *log.Logger) error {
+func (c *NamespaceConfig) ResolveGlobs() error {
 	if len(c.SourceData.Files) > 0 {
 		resolvedFiles := make([]string, 0)
 		for _, sf := range c.SourceData.Files {
@@ -92,10 +93,10 @@ func (c *NamespaceConfig) ResolveGlobs(logger *log.Logger) error {
 				if err != nil {
 					return err
 				}
-				logger.Infof("Resolved globs %v to %v", sf, matches)
+				fmt.Printf("Resolved globs %v to %v\n", sf, matches)
 				resolvedFiles = append(resolvedFiles, matches...)
 			} else {
-				logger.Warnf("No globs for %v", sf)
+				fmt.Printf("No globs for %v\n", sf)
 				resolvedFiles = append(resolvedFiles, sf)
 			}
 		}
@@ -110,9 +111,15 @@ func (c *NamespaceConfig) ResolveGlobs(logger *log.Logger) error {
 // Compile compiles the configuration (mostly regular expressions that are used
 // in configuration variables) for later use
 func (c *NamespaceConfig) Compile() error {
+	for i := range c.FilterConfigs {
+		if err := c.FilterConfigs[i].Compile(); err != nil {
+			return nil
+		}
+	}
+
 	for i := range c.RelabelConfigs {
 		if err := c.RelabelConfigs[i].Compile(); err != nil {
-			return err
+			return nil
 		}
 	}
 	if c.NamespaceLabelName != "" {

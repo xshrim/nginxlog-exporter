@@ -3,7 +3,7 @@ package relabeling
 import (
 	"testing"
 
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/pkg/config"
+	"xshrim/nginxlog-exporter/pkg/config"
 )
 
 func buildRelabeling(cfg config.RelabelConfig) (*Relabeling, error) {

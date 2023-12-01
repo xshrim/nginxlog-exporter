@@ -3,43 +3,42 @@ package syslog
 import (
 	"fmt"
 	"net/url"
-	"os"
 
 	"gopkg.in/mcuadros/go-syslog.v2"
 	"gopkg.in/mcuadros/go-syslog.v2/format"
 )
 
-func openListener(s *syslog.Server, c string) (func() error, error) {
+func openListener(s *syslog.Server, c string) error {
 	u, err := url.Parse(c)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	switch u.Scheme {
 	case "tcp":
-		return nil, s.ListenTCP(u.Host)
-
-	case "udp":
-		return nil, s.ListenUDP(u.Host)
-
-	case "unix":
-		socketPath := u.Host + u.Path
-
-		if err := s.ListenUnixgram(socketPath); err != nil {
-			return nil, err
+		err := s.ListenTCP(u.Host)
+		if err != nil {
+			return err
 		}
 
-		return func() error {
-			return os.Remove(socketPath)
-		}, nil
+	case "udp":
+		err := s.ListenUDP(u.Host)
+		if err != nil {
+			return err
+		}
+
+	case "unix":
+		return fmt.Errorf("Not implemented")
 
 	default:
-		return nil, fmt.Errorf("syslog server should be in format unix/tcp/udp://127.0.0.1:5533")
+		return fmt.Errorf("syslog server should be in format unix/tcp/udp://127.0.0.1:5533")
 	}
+
+	return nil
 }
 
 // Listen opens up a new syslog server on either a TCP or UDP port
-func Listen(conn string, formatSpec string) (syslog.LogPartsChannel, *syslog.Server, func() error, error) {
+func Listen(conn string, formatSpec string) (syslog.LogPartsChannel, *syslog.Server, error) {
 	channel := make(syslog.LogPartsChannel)
 	handler := syslog.NewChannelHandler(channel)
 
@@ -59,29 +58,22 @@ func Listen(conn string, formatSpec string) (syslog.LogPartsChannel, *syslog.Ser
 	case "":
 		format = syslog.Automatic
 	default:
-		return nil, nil, nil, fmt.Errorf("unknown syslog format: '%s'", format)
+		return nil, nil, fmt.Errorf("unknown syslog format: '%s'", format)
 	}
 
 	//RFC3164 or RFC5424 or RFC6587. nginx works on RFC3164
 	server.SetFormat(format)
 	server.SetHandler(handler)
 
-	closeListener, err := openListener(server, conn)
+	err := openListener(server, conn)
 	if err != nil {
-		return nil, nil, nil, err
+		return nil, nil, err
 	}
 
-	if err = server.Boot(); err != nil {
-		return nil, nil, nil, err
+	err = server.Boot()
+	if err != nil {
+		return nil, nil, err
 	}
 
-	stopFn := func() error {
-		if err := server.Kill(); err != nil {
-			return fmt.Errorf("failed to kill syslog server: %w", err)
-		}
-
-		return closeListener()
-	}
-
-	return channel, server, stopFn, nil
+	return channel, server, nil
 }

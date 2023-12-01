@@ -16,8 +16,7 @@ type RelabelConfig struct {
 	Separator   string              `hcl:"separator"`
 	OnlyCounter bool                `hcl:"only_counter" yaml:"only_counter"`
 
-	WhitelistExists bool
-	WhitelistMap    map[string]interface{}
+	WhitelistMap map[string]any
 }
 
 // RelabelValueMatch describes a single label match statement
@@ -30,13 +29,11 @@ type RelabelValueMatch struct {
 
 // Compile compiles expressions and lookup tables for efficient later use
 func (c *RelabelConfig) Compile() error {
-	c.WhitelistMap = make(map[string]interface{})
-	c.WhitelistExists = len(c.Whitelist) > 0
-
-	for i := range c.Whitelist {
-		c.WhitelistMap[c.Whitelist[i]] = nil
+  c.WhitelistMap = make(map[string]any)
+	for _, wl := range c.Whitelist {
+    c.WhitelistMap[wl] = nil
 	}
-
+  
 	for i := range c.Matches {
 		if c.Matches[i].RegexpString != "" {
 			r, err := regexp.Compile(c.Matches[i].RegexpString)

@@ -22,7 +22,7 @@ func (r *Relabeling) Map(sourceValue string) (string, error) {
 		}
 	}
 
-	if r.WhitelistExists {
+	if len(r.WhitelistMap) > 0 {
 		if _, ok := r.WhitelistMap[sourceValue]; ok {
 			return sourceValue, nil
 		}

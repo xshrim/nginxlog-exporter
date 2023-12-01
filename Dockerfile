@@ -1,13 +1,12 @@
-FROM golang:1.20
+FROM golang:1.18
 
 COPY . /work
 WORKDIR /work
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-w -s' -a -installsuffix cgo -o prometheus-nginxlog-exporter
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o nginxlog-exporter
 
 FROM scratch
 
-COPY --from=0 /work/prometheus-nginxlog-exporter /prometheus-nginxlog-exporter
+COPY --from=0 /work/nginxlog-exporter /nginxlog-exporter
 
-EXPOSE 4040
-USER 65532
-ENTRYPOINT ["/prometheus-nginxlog-exporter"]
+EXPOSE 7788
+ENTRYPOINT ["/nginxlog-exporter"]

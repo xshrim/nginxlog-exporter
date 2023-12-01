@@ -1,4 +1,4 @@
 #!/bin/sh
 
 systemctl daemon-reload
-systemctl enable prometheus-nginxlog-exporter
+systemctl enable nginxlog-exporter

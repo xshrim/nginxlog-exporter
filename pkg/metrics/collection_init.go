@@ -1,10 +1,20 @@
 package metrics
 
 import (
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/pkg/config"
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/pkg/relabeling"
+	"xshrim/nginxlog-exporter/pkg/config"
+	"xshrim/nginxlog-exporter/pkg/relabeling"
+
 	"github.com/prometheus/client_golang/prometheus"
 )
+
+func inLabels(label string, labels []string) bool {
+	for _, l := range labels {
+		if label == l {
+			return true
+		}
+	}
+	return false
+}
 
 // Init initializes a metrics struct
 func (m *Collection) Init(cfg *config.NamespaceConfig) {
@@ -12,17 +22,30 @@ func (m *Collection) Init(cfg *config.NamespaceConfig) {
 
 	labels := cfg.OrderedLabelNames
 	counterLabels := labels
+	domainLabels := append(labels, "domain", "port", "sn", "issuer", "issueto", "expireat", "status")
 
-	relabelings := relabeling.NewRelabelings(cfg.RelabelConfigs)
-	relabelings = append(relabelings, relabeling.DefaultRelabelings...)
-	relabelings = relabeling.UniqueRelabelings(relabelings)
+	for i := range cfg.RelabelConfigs {
+		if !cfg.RelabelConfigs[i].OnlyCounter {
+			labels = append(labels, cfg.RelabelConfigs[i].TargetLabel)
+		}
+		counterLabels = append(counterLabels, cfg.RelabelConfigs[i].TargetLabel)
+	}
 
-	for _, r := range relabelings {
-		if !r.OnlyCounter {
+	for _, r := range relabeling.DefaultRelabelings {
+		if !inLabels(r.TargetLabel, labels) {
 			labels = append(labels, r.TargetLabel)
 		}
-		counterLabels = append(counterLabels, r.TargetLabel)
+		if !inLabels(r.TargetLabel, counterLabels) {
+			counterLabels = append(counterLabels, r.TargetLabel)
+		}
 	}
+
+	m.DomainCertValidity = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+		Namespace:   cfg.NamespacePrefix,
+		ConstLabels: cfg.NamespaceLabels,
+		Name:        "domain_cert_validity_seconds",
+		Help:        "seconds of domain certificate validity",
+	}, domainLabels)
 
 	m.CountTotal = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Namespace:   cfg.NamespacePrefix,
@@ -93,10 +116,10 @@ func (m *Collection) Init(cfg *config.NamespaceConfig) {
 		Buckets:     cfg.HistogramBuckets,
 	}, labels)
 
-	m.ParseErrorsTotal = prometheus.NewCounter(prometheus.CounterOpts{
+	m.DiscardTotal = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Namespace:   cfg.NamespacePrefix,
 		ConstLabels: cfg.NamespaceLabels,
-		Name:        "parse_errors_total",
-		Help:        "Total number of log file lines that could not be parsed",
-	})
+		Name:        "discard_total",
+		Help:        "Total number of log file lines that filter dropped or parse failed",
+	}, []string{"reason"})
 }

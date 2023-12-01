@@ -1,4 +1,4 @@
-/.idea/
-/prometheus-nginxlog-exporter
+/.vscode/
+/nginxlog-exporter
 /dist
 .history

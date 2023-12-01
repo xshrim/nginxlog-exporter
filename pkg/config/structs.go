@@ -15,9 +15,6 @@ type StartupFlags struct {
 	VerifyConfig               bool
 	Version                    bool
 
-	LogLevel  string
-	LogFormat string
-
 	CPUProfile string
 	MemProfile string
 }

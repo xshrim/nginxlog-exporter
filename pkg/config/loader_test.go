@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -147,8 +146,7 @@ func TestLoadsHCLConfigFile(t *testing.T) {
 	buf := bytes.NewBufferString(HCLInput)
 	cfg := Config{}
 
-	logger, _ := log.New("panic", "console")
-	err := LoadConfigFromStream(logger, &cfg, buf, TypeHCL)
+	err := LoadConfigFromStream(&cfg, buf, TypeHCL)
 	assert.Nil(t, err, "unexpected error: %v", err)
 	assertConfigContents(t, cfg)
 }
@@ -159,8 +157,7 @@ func TestLoadsYAMLConfigFile(t *testing.T) {
 	buf := bytes.NewBufferString(YAMLInput)
 	cfg := Config{}
 
-	logger, _ := log.New("panic", "console")
-	err := LoadConfigFromStream(logger, &cfg, buf, TypeYAML)
+	err := LoadConfigFromStream(&cfg, buf, TypeYAML)
 	assert.Nil(t, err, "unexpected error: %v", err)
 	assertConfigContents(t, cfg)
 }
@@ -266,8 +263,7 @@ func TestLoadsNSLabeledHCLConfigFile(t *testing.T) {
 	buf := bytes.NewBufferString(HCLLabeledInput)
 	cfg := Config{}
 
-	logger, _ := log.New("panic", "console")
-	err := LoadConfigFromStream(logger, &cfg, buf, TypeHCL)
+	err := LoadConfigFromStream(&cfg, buf, TypeHCL)
 	assert.Nil(t, err, "unexpected error: %v", err)
 	assertLabeledConfigContents(t, cfg)
 }
@@ -278,8 +274,7 @@ func TestLoadsNSLabeledYAMLConfigFile(t *testing.T) {
 	buf := bytes.NewBufferString(YAMLLabeledInput)
 	cfg := Config{}
 
-	logger, _ := log.New("panic", "console")
-	err := LoadConfigFromStream(logger, &cfg, buf, TypeYAML)
+	err := LoadConfigFromStream(&cfg, buf, TypeYAML)
 	assert.Nil(t, err, "unexpected error: %v", err)
 	assertLabeledConfigContents(t, cfg)
 }

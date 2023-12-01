@@ -5,6 +5,7 @@ import "github.com/prometheus/client_golang/prometheus"
 // Collection is a struct containing pointers to all metrics that should be
 // exposed to Prometheus
 type Collection struct {
+	DomainCertValidity         *prometheus.GaugeVec
 	CountTotal                 *prometheus.CounterVec
 	ResponseBytesTotal         *prometheus.CounterVec
 	RequestBytesTotal          *prometheus.CounterVec
@@ -14,5 +15,5 @@ type Collection struct {
 	UpstreamConnectSecondsHist *prometheus.HistogramVec
 	ResponseSeconds            *prometheus.SummaryVec
 	ResponseSecondsHist        *prometheus.HistogramVec
-	ParseErrorsTotal           prometheus.Counter
+	DiscardTotal               *prometheus.CounterVec
 }

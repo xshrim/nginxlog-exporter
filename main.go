@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 Martin Helmich <martin@helmich.me>
+ * Copyright 2019 Martin Helmich <martin@helmich.me>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,23 +26,27 @@ import (
 	"strings"
 	"sync"
 	"syscall"
+	"time"
 
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/log"
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/pkg/config"
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/pkg/discovery"
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/pkg/metrics"
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/pkg/parser"
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/pkg/prof"
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/pkg/relabeling"
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/pkg/syslog"
-	"github.com/martin-helmich/prometheus-nginxlog-exporter/pkg/tail"
-	"github.com/pkg/errors"
+	"xshrim/nginxlog-exporter/pkg/config"
+	"xshrim/nginxlog-exporter/pkg/discovery"
+	"xshrim/nginxlog-exporter/pkg/metrics"
+	"xshrim/nginxlog-exporter/pkg/parser"
+	"xshrim/nginxlog-exporter/pkg/prof"
+	"xshrim/nginxlog-exporter/pkg/relabeling"
+	"xshrim/nginxlog-exporter/pkg/ssl"
+	"xshrim/nginxlog-exporter/pkg/syslog"
+	"xshrim/nginxlog-exporter/pkg/tail"
+
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/version"
 )
 
-const maxStaticLabels = 128
+// 交叉编译
+// CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o nginxlog-exporter main.go
+// CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -o nginxlog-exporter.exe main.go
+// CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o nginxlog-exporter main.go
 
 func main() {
 	var opts config.StartupFlags
@@ -64,13 +68,11 @@ func main() {
 	flag.StringVar(&opts.Parser, "parser", "text", "NGINX access log format parser. One of: [text, json]")
 	flag.StringVar(&opts.Format, "format", `$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for"`, "NGINX access log format")
 	flag.StringVar(&opts.Namespace, "namespace", "nginx", "namespace to use for metric names")
-	flag.StringVar(&opts.ConfigFile, "config-file", "", "Configuration file to read from")
+	flag.StringVar(&opts.ConfigFile, "config-file", "nginxlog-exporter.yaml", "Configuration file to read from")
 	flag.BoolVar(&opts.EnableExperimentalFeatures, "enable-experimental", false, "Set this flag to enable experimental features")
 	flag.StringVar(&opts.CPUProfile, "cpuprofile", "", "write cpu profile to `file`")
 	flag.StringVar(&opts.MemProfile, "memprofile", "", "write memory profile to `file`")
 	flag.StringVar(&opts.MetricsEndpoint, "metrics-endpoint", cfg.Listen.MetricsEndpoint, "URL path at which to serve metrics")
-	flag.StringVar(&opts.LogLevel, "log-level", "info", "level of logs. Allowed values: error, warning, info, debug")
-	flag.StringVar(&opts.LogFormat, "log-format", "console", "Define log format. Allowed values: console, json")
 	flag.BoolVar(&opts.VerifyConfig, "verify-config", false, "Enable this flag to check config file loads, then exit")
 	flag.BoolVar(&opts.Version, "version", false, "set to print version information")
 	flag.Parse()
@@ -78,12 +80,6 @@ func main() {
 	if opts.Version {
 		fmt.Println(version.Print("prometheus-nginxlog-exporter"))
 		os.Exit(0)
-	}
-
-	logger, err := log.New(opts.LogLevel, opts.LogFormat)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
 	}
 
 	opts.Filenames = flag.Args()
@@ -98,7 +94,7 @@ func main() {
 	go func() {
 		sig := <-sigChan
 
-		logger.Infof("caught term %s. exiting", sig)
+		fmt.Printf("caught term %s. exiting\n", sig)
 
 		close(stopChan)
 		stopHandlers.Wait()
@@ -114,38 +110,33 @@ func main() {
 	prof.SetupCPUProfiling(opts.CPUProfile, stopChan, &stopHandlers)
 	prof.SetupMemoryProfiling(opts.MemProfile, stopChan, &stopHandlers)
 
-	loadConfig(logger, &opts, &cfg)
+	loadConfig(&opts, &cfg)
 
-	logger.Debugf("using configuration %+v", cfg)
+	fmt.Printf("using configuration %+v\n", cfg)
 
 	if stabilityError := cfg.StabilityWarnings(); stabilityError != nil && !opts.EnableExperimentalFeatures {
-		logger.Error("Your configuration file contains an option that is explicitly labeled as experimental feature")
-		logger.Error(stabilityError.Error())
-		logger.Error("Use the -enable-experimental flag or the enable_experimental option to enable these features. Use them at your own peril.")
+		fmt.Fprintf(os.Stderr, "Your configuration file contains an option that is explicitly labeled as experimental feature:\n\n  %s\n\n", stabilityError.Error())
+		fmt.Fprintln(os.Stderr, "Use the -enable-experimental flag or the enable_experimental option to enable these features. Use them at your own peril.")
 
 		os.Exit(1)
 	}
 
 	if cfg.Consul.Enable {
-		setupConsul(logger, &cfg, stopChan, &stopHandlers)
+		setupConsul(&cfg, stopChan, &stopHandlers)
 	}
 
-	for i := range cfg.Namespaces {
-		namespace := &cfg.Namespaces[i]
-
-		nsMetrics := metrics.NewForNamespace(namespace)
+	for _, ns := range cfg.Namespaces {
+		nsMetrics := metrics.NewForNamespace(&ns)
 		gatherers = append(gatherers, nsMetrics.Gatherer())
 
-		logger.Infof("starting listener for namespace %s", namespace.Name)
-		go func(ns *config.NamespaceConfig) {
-			processNamespace(logger, ns, &(nsMetrics.Collection), stopChan, &stopHandlers)
-		}(namespace)
+		fmt.Printf("starting listener for namespace %s\n", ns.Name)
+		go processNamespace(ns, &(nsMetrics.Collection))
 	}
 
 	listenAddr := fmt.Sprintf("%s:%d", cfg.Listen.Address, cfg.Listen.Port)
 	endpoint := cfg.Listen.MetricsEndpointOrDefault()
 
-	logger.Infof("running HTTP server on address %s, serving metrics at %s", listenAddr, endpoint)
+	fmt.Printf("running HTTP server on address %s, serving metrics at %s\n", listenAddr, endpoint)
 
 	nsHandler := promhttp.InstrumentMetricHandler(
 		prometheus.DefaultRegisterer,
@@ -154,42 +145,43 @@ func main() {
 
 	http.Handle(endpoint, nsHandler)
 
-	logger.Fatal(http.ListenAndServe(listenAddr, nil))
+	if err := http.ListenAndServe(listenAddr, nil); err != nil {
+		fmt.Printf("error while starting HTTP server: %s", err.Error())
+	}
 }
 
-func loadConfig(logger *log.Logger, opts *config.StartupFlags, cfg *config.Config) {
+func loadConfig(opts *config.StartupFlags, cfg *config.Config) {
 	if opts.ConfigFile != "" {
-		logger.Infof("loading configuration file %s", opts.ConfigFile)
-		if err := config.LoadConfigFromFile(logger, cfg, opts.ConfigFile); err != nil {
-			logger.Fatal(err)
+		fmt.Printf("loading configuration file %s\n", opts.ConfigFile)
+		if err := config.LoadConfigFromFile(cfg, opts.ConfigFile); err != nil {
+			panic(err)
 		}
 	} else if err := config.LoadConfigFromFlags(cfg, opts); err != nil {
-		logger.Fatal(err)
+		panic(err)
 	}
-
 	if opts.VerifyConfig {
 		fmt.Printf("Configuration is valid")
 		os.Exit(0)
 	}
 }
 
-func setupConsul(logger *log.Logger, cfg *config.Config, stopChan <-chan bool, stopHandlers *sync.WaitGroup) {
+func setupConsul(cfg *config.Config, stopChan <-chan bool, stopHandlers *sync.WaitGroup) {
 	registrator, err := discovery.NewConsulRegistrator(cfg)
 	if err != nil {
-		logger.Fatal(err)
+		panic(err)
 	}
 
-	logger.Info("registering service in Consul")
-	if err = registrator.RegisterConsul(); err != nil {
-		logger.Fatal(err)
+	fmt.Printf("registering service in Consul\n")
+	if err := registrator.RegisterConsul(); err != nil {
+		panic(err)
 	}
 
 	go func() {
 		<-stopChan
-		logger.Info("unregistering service in Consul")
+		fmt.Printf("unregistering service in Consul\n")
 
 		if err := registrator.UnregisterConsul(); err != nil {
-			logger.Errorf("error while unregistering from consul: %s", err.Error())
+			fmt.Printf("error while unregistering from consul: %s\n", err.Error())
 		}
 
 		stopHandlers.Done()
@@ -198,19 +190,28 @@ func setupConsul(logger *log.Logger, cfg *config.Config, stopChan <-chan bool, s
 	stopHandlers.Add(1)
 }
 
-func processNamespace(logger *log.Logger, nsCfg *config.NamespaceConfig, metrics *metrics.Collection, stopChan <-chan bool, stopHandlers *sync.WaitGroup) error {
+func processNamespace(nsCfg config.NamespaceConfig, metrics *metrics.Collection) {
 	var followers []tail.Follower
 
-	logParser := parser.NewParser(nsCfg)
+	parser := parser.NewParser(nsCfg)
+
+	go func() {
+		for {
+			for _, domain := range nsCfg.Domains {
+				go processDomain(nsCfg, domain, metrics)
+			}
+			time.Sleep(10 * time.Second)
+		}
+	}()
 
 	for _, f := range nsCfg.SourceData.Files {
-		t, err := tail.NewFileFollower(logger, f)
+		t, err := tail.NewFileFollower(f)
 		if err != nil {
-			logger.Fatal(err)
+			panic(err)
 		}
 
 		t.OnError(func(err error) {
-			logger.Fatal(err)
+			panic(err)
 		})
 
 		followers = append(followers, t)
@@ -219,32 +220,20 @@ func processNamespace(logger *log.Logger, nsCfg *config.NamespaceConfig, metrics
 	if nsCfg.SourceData.Syslog != nil {
 		slCfg := nsCfg.SourceData.Syslog
 
-		logger.Infof("running Syslog server on address %s", slCfg.ListenAddress)
-		channel, server, closeServer, err := syslog.Listen(slCfg.ListenAddress, slCfg.Format)
+		fmt.Printf("running Syslog server on address %s\n", slCfg.ListenAddress)
+		channel, server, err := syslog.Listen(slCfg.ListenAddress, slCfg.Format)
 		if err != nil {
 			panic(err)
 		}
 
-		stopHandlers.Add(1)
-
-		go func() {
-			<-stopChan
-
-			if err := closeServer(); err != nil {
-				fmt.Printf("error while closing syslog server: %s\n", err.Error())
-			}
-
-			stopHandlers.Done()
-		}()
-
 		for _, f := range slCfg.Tags {
 			t, err := tail.NewSyslogFollower(f, server, channel)
 			if err != nil {
-				logger.Fatal(err)
+				panic(err)
 			}
 
 			t.OnError(func(err error) {
-				logger.Fatal(err)
+				panic(err)
 			})
 
 			followers = append(followers, t)
@@ -260,21 +249,37 @@ func processNamespace(logger *log.Logger, nsCfg *config.NamespaceConfig, metrics
 		}
 	}
 
-	errs := make(chan error)
-	defer close(errs)
-
-	for _, follower := range followers {
-		go func(f tail.Follower) {
-			if err := processSource(logger, nsCfg, f, logParser, metrics, hasCounterOnlyLabels); err != nil {
-				errs <- err
-			}
-		}(follower)
+	for _, f := range followers {
+		go processSource(nsCfg, f, parser, metrics, hasCounterOnlyLabels)
 	}
 
-	return <-errs
 }
 
-func processSource(logger *log.Logger, nsCfg *config.NamespaceConfig, t tail.Follower, parser parser.Parser, metrics *metrics.Collection, hasCounterOnlyLabels bool) error {
+func processDomain(nsCfg config.NamespaceConfig, domain string, metrics *metrics.Collection) {
+	staticLabelValues := nsCfg.OrderedLabelValues
+
+	labelValues := make([]string, len(staticLabelValues))
+
+	copy(labelValues, staticLabelValues)
+
+	status := "normal"
+	domain, port, sn, issuer, dnss, expireat, remain, err := ssl.Check(domain)
+	if err != nil {
+		status = err.Error()
+		// fmt.Printf("error while request '%s': %s\n", domain, err)
+		// metrics.DiscardTotal.WithLabelValues("domain").Inc()
+		// return
+	} else if remain < 1 {
+		status = "expired"
+	} else if remain < 604800 {
+		status = "expiring"
+	}
+
+	labelValues = append(labelValues, domain, port, sn, issuer, dnss, expireat, status)
+	metrics.DomainCertValidity.WithLabelValues(labelValues...).Set(remain)
+}
+
+func processSource(nsCfg config.NamespaceConfig, t tail.Follower, parser parser.Parser, metrics *metrics.Collection, hasCounterOnlyLabels bool) {
 	relabelings := relabeling.NewRelabelings(nsCfg.RelabelConfigs)
 	relabelings = append(relabelings, relabeling.DefaultRelabelings...)
 	relabelings = relabeling.UniqueRelabelings(relabelings)
@@ -283,24 +288,53 @@ func processSource(logger *log.Logger, nsCfg *config.NamespaceConfig, t tail.Fol
 
 	totalLabelCount := len(staticLabelValues) + len(relabelings)
 	relabelLabelOffset := len(staticLabelValues)
-
-	if totalLabelCount > maxStaticLabels {
-		return errors.Errorf("configured label count exceeds the maximum count of %d", maxStaticLabels)
-	}
-
 	labelValues := make([]string, totalLabelCount)
 
 	copy(labelValues, staticLabelValues)
 
+	filters := nsCfg.FilterConfigs
+
 	for line := range t.Lines() {
+		line = strings.ReplaceAll(line, "\r", "")
 		if nsCfg.PrintLog {
-			fmt.Println(line)
+			fmt.Println("line:", line)
+		}
+
+		if line == "" {
+			continue
 		}
 
 		fields, err := parser.ParseString(line)
 		if err != nil {
-			logger.Errorf("error while parsing line '%s': %s", line, err)
-			metrics.ParseErrorsTotal.Inc()
+			fmt.Printf("error while parsing line '%s': %s\n", line, err)
+			metrics.DiscardTotal.WithLabelValues("parse").Inc()
+			continue
+		}
+
+		drop := false
+		for _, filter := range filters {
+			targetStr := ""
+			if filter.SourceValue == "line" {
+				targetStr = line
+			} else if str, ok := fields[filter.SourceValue]; ok {
+				targetStr = str
+			}
+
+			if targetStr == "" {
+				continue
+			}
+
+			if filter.Filter(targetStr) {
+				drop = true
+				break
+			}
+
+		}
+		if drop {
+			metrics.DiscardTotal.WithLabelValues("filter").Inc()
+			if nsCfg.PrintLog {
+				fmt.Println("dropped log:", line)
+			}
 			continue
 		}
 
@@ -322,39 +356,37 @@ func processSource(logger *log.Logger, nsCfg *config.NamespaceConfig, t tail.Fol
 
 		metrics.CountTotal.WithLabelValues(labelValues...).Inc()
 
-		if v, ok := observeMetrics(logger, fields, "body_bytes_sent", floatFromFields, metrics.ParseErrorsTotal); ok {
+		if v, ok := observeMetrics(fields, "body_bytes_sent", floatFromFields, metrics.DiscardTotal); ok {
 			metrics.ResponseBytesTotal.WithLabelValues(notCounterValues...).Add(v)
 		}
 
-		if v, ok := observeMetrics(logger, fields, "request_length", floatFromFields, metrics.ParseErrorsTotal); ok {
+		if v, ok := observeMetrics(fields, "request_length", floatFromFields, metrics.DiscardTotal); ok {
 			metrics.RequestBytesTotal.WithLabelValues(notCounterValues...).Add(v)
 		}
 
-		if v, ok := observeMetrics(logger, fields, "upstream_response_time", floatFromFieldsMulti, metrics.ParseErrorsTotal); ok {
+		if v, ok := observeMetrics(fields, "upstream_response_time", floatFromFieldsMulti, metrics.DiscardTotal); ok {
 			metrics.UpstreamSeconds.WithLabelValues(notCounterValues...).Observe(v)
 			metrics.UpstreamSecondsHist.WithLabelValues(notCounterValues...).Observe(v)
 		}
 
-		if v, ok := observeMetrics(logger, fields, "upstream_connect_time", floatFromFieldsMulti, metrics.ParseErrorsTotal); ok {
+		if v, ok := observeMetrics(fields, "upstream_connect_time", floatFromFieldsMulti, metrics.DiscardTotal); ok {
 			metrics.UpstreamConnectSeconds.WithLabelValues(notCounterValues...).Observe(v)
 			metrics.UpstreamConnectSecondsHist.WithLabelValues(notCounterValues...).Observe(v)
 		}
 
-		if v, ok := observeMetrics(logger, fields, "request_time", floatFromFields, metrics.ParseErrorsTotal); ok {
+		if v, ok := observeMetrics(fields, "request_time", floatFromFields, metrics.DiscardTotal); ok {
 			metrics.ResponseSeconds.WithLabelValues(notCounterValues...).Observe(v)
 			metrics.ResponseSecondsHist.WithLabelValues(notCounterValues...).Observe(v)
 		}
 	}
-
-	return nil
 }
 
-func observeMetrics(logger *log.Logger, fields map[string]string, name string, extractor func(map[string]string, string) (float64, bool, error), parseErrors prometheus.Counter) (float64, bool) {
+func observeMetrics(fields map[string]string, name string, extractor func(map[string]string, string) (float64, bool, error), parseErrors *prometheus.CounterVec) (float64, bool) {
 	if observation, ok, err := extractor(fields, name); ok {
 		return observation, true
 	} else if err != nil {
-		logger.Errorf("error while parsing $%s: %v", name, err)
-		parseErrors.Inc()
+		fmt.Printf("error while parsing $%s: %v\n", name, err)
+		parseErrors.WithLabelValues("parse").Inc()
 	}
 
 	return 0, false
@@ -373,7 +405,7 @@ func floatFromFieldsMulti(fields map[string]string, name string) (float64, bool,
 
 	sum := float64(0)
 
-	for _, v := range strings.FieldsFunc(val, func(r rune) bool { return r == ',' || r == ':' }) {
+	for _, v := range strings.Split(val, ",") {
 		v = strings.TrimSpace(v)
 
 		if v == "-" {
