@@ -4,7 +4,7 @@
 
 nginxlog-exporter将nginx的access日志(或类似日志格式)转换为prometheus指标，从而实现对nginx所代理的后端服务的接口请求指标的无侵入式采集
 
-nginxlog-exporter基于开源工具[martin-helmich/prometheus-nginxlog-exporter](https://github.com/martin-helmich/prometheus-nginxlog-exporter)，其功能特性、使用方法和配置文件与该工具几乎相同，区别仅在于nginxlog-exporter新增了对nginx日志的过滤功能
+nginxlog-exporter基于开源工具[martin-helmich/prometheus-nginxlog-exporter](https://github.com/martin-helmich/prometheus-nginxlog-exporter)，其功能特性、使用方法和配置文件与该工具几乎相同，区别仅在于nginxlog-exporter新增了对nginx日志的过滤功能域名证书有效期指标
 
 ## 编译
 
@@ -46,8 +46,10 @@ consul: # 服务发现，用于将此exporter注册到consul
     tags: ["foo", "bar"]
 
 namespaces: # 以命名空间表示指标划分(可以团队为维度，也可以业务系统为维度)
-  - name: legaltrade_backend # 命名空间名称为指标名称前缀
-    format: '$remote_addr $remote_user [$time_iso8601] $status "$request" $http_host $request_time $upstream_response_time $body_bytes_sent $upstream_addr $upstream_status $upstream_http__uid_ $http_referer "$http_user_agent" "$http_x_forwarded_for"' # nginx access日志格式(与nginx配置文件中保持一致)
+  - name: demo_backend # 命名空间名称为指标名称前缀
+    domains:    # 域名证书检测
+      - demo.example.com:8443
+    format: '$remote_addr $remote_user "$http_uname" "$http_uid" [$time_iso8601] $status "$request" $http_host $request_time "$upstream_response_time" $body_bytes_sent "$upstream_addr" "$upstream_status" "$http_referer" "$http_user_agent" "$http_x_forwarded_for"' # nginx access日志格式(与nginx配置文件中保持一致)
     filter_configs: # 将符合任一规则的日志行丢弃
       - from: line # 指定需要进行匹配的字段, line表示匹配整行
         match: ".*jndi:.*" # 正则匹配规则
@@ -76,14 +78,16 @@ namespaces: # 以命名空间表示指标划分(可以团队为维度，也可�
     source: # exporter采集的nginx日志文件
       files: # 支持file和syslog两种模式
         - /var/log/nginx/access.log
+        # - ./test.log
     metrics_override: # 指标名覆盖(用于多个命名空间使用相同的指标名)
-      prefix: "entnglog" # 将指标名中的namespace前缀替换
+      prefix: "demolog" # 将指标名中的namespace前缀替换
     namespace_label: "namespace" # 将命名空间名称作为指标label
     labels: # 额外为命名空间下的所有指标添加label
-      biz: "enterprise"
-      sys: "legaltrade"
+      biz: "trade"
+      sys: "demo"
       svc: "backend"
     histogram_buckets: [.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10, 20] # histogram类型指标的bucket区间设计
+
 ```
 
 > 因过滤或解析失败而丢弃的日志行数均会统计在**DiscardTotal**指标中，并以*reason标签进行区分*

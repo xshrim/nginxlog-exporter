@@ -17,7 +17,7 @@ consul: # 服务发现，用于将此exporter注册到consul
 
 namespaces: # 以命名空间表示指标划分(可以团队为维度，也可以业务系统为维度)
   - name: demo_backend # 命名空间名称为指标名称前缀
-    domains:
+    domains:     # 域名证书检测
       - demo.example.com:8443
     format: '$remote_addr $remote_user "$http_uname" "$http_uid" [$time_iso8601] $status "$request" $http_host $request_time "$upstream_response_time" $body_bytes_sent "$upstream_addr" "$upstream_status" "$http_referer" "$http_user_agent" "$http_x_forwarded_for"' # nginx access日志格式(与nginx配置文件中保持一致)
     filter_configs: # 将符合任一规则的日志行丢弃
