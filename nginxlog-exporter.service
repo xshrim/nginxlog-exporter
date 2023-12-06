@@ -3,9 +3,10 @@ Description=NGINX metrics exporter for Prometheus
 After=network-online.target
 
 [Service]
-ExecStart=/usr/sbin/nginxlog-exporter -config-file /etc/nginxlog-exporter.hcl
+ExecStart=/usr/local/bin/nginxlog-exporter -config-file /etc/nginxlog-exporter.yaml
+ExecReload=/bin/kill -HUP $MAINPID
 Restart=always
-ProtectSystem=full
+ProtectSystem=no
 CapabilityBoundingSet=
 
 [Install]
