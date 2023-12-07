@@ -1,0 +1,1048 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 46,
+  "iteration": 1701941103690,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "Prometheus-Qy",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "min",
+            "max",
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m]))",
+          "interval": "",
+          "legendFormat": "今日",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m] offset 1d))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "昨日",
+          "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m] offset 7d))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "上周",
+          "refId": "C"
+        }
+      ],
+      "title": "总请求量",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus-Qy",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "min",
+            "max",
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m]))",
+          "interval": "",
+          "legendFormat": "今日",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m] offset 1d))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "昨日",
+          "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m] offset 7d))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "上周",
+          "refId": "C"
+        }
+      ],
+      "title": "总QPS",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus-Qy",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "histogram_quantile(0.90, sum(rate(entnglog_http_upstream_time_seconds_hist_bucket{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m])) by (le))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "整体P90",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus-Qy",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "histogram_quantile(0.99, sum(rate(entnglog_http_upstream_time_seconds_hist_bucket{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m])) by (le))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "整体P99",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus-Qy",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "min",
+            "max",
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum(rate(entnglog_http_upstream_time_seconds_sum{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m])) by (request) / sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m])) by (request)",
+          "interval": "",
+          "legendFormat": "{{request}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "请求耗时",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus-Qy",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "min",
+            "max",
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", request=~\".*$service.*\",status!~\"20\\\\d\"}[10m])) / sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m]))",
+          "interval": "",
+          "legendFormat": "今日",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", request=~\".*$service.*\",status!~\"20\\\\d\"}[10m] offset 1d)) / sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m] offset 1d))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "昨日",
+          "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", request=~\".*$service.*\",status!~\"20\\\\d\"}[10m] offset 7d)) / sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m] offset 7d))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "上周",
+          "refId": "C"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "错误率",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus-Qy",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 7,
+        "x": 0,
+        "y": 6
+      },
+      "id": 6,
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "topk(5, sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[60m])) by (request))",
+          "interval": "",
+          "legendFormat": "{{request}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "QPSTop5",
+      "type": "bargauge"
+    },
+    {
+      "datasource": "Prometheus-Qy",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 9,
+        "x": 7,
+        "y": 6
+      },
+      "id": 7,
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "topk(5, sum(rate(entnglog_http_upstream_time_seconds_sum{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[60m])) by (request) / sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[60m])) by (request) )",
+          "interval": "",
+          "legendFormat": "{{request}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "耗时Top5",
+      "type": "bargauge"
+    },
+    {
+      "datasource": "Prometheus-Qy",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 6
+      },
+      "id": 8,
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "text": {}
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "topk(5, sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", status!~\"20\\\\d\"}[10m])) by (request) / sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m])) by (request))",
+          "interval": "",
+          "legendFormat": "{{request}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "错误率Top5",
+      "type": "bargauge"
+    },
+    {
+      "datasource": "Prometheus-Qy",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "min",
+            "max",
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "histogram_quantile(0.90, sum(rate(entnglog_http_upstream_time_seconds_hist_bucket{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", request=~\".*$service.*\"}[10m])) by (request,le))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{request}}",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "请求P90",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus-Qy",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "min",
+            "max",
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "histogram_quantile(0.99, sum(rate(entnglog_http_upstream_time_seconds_hist_bucket{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m])) by (request,le))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{request}}",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "请求P99",
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 30,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "威新",
+          "value": "威新"
+        },
+        "datasource": "Prometheus-Qy",
+        "definition": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\"}, idc)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "中心",
+        "multi": false,
+        "name": "center",
+        "options": [],
+        "query": {
+          "query": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\"}, idc)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "backend",
+          "value": "backend"
+        },
+        "datasource": "Prometheus-Qy",
+        "definition": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\"}, module)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "模块",
+        "multi": false,
+        "name": "module",
+        "options": [],
+        "query": {
+          "query": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\"}, module)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": [
+            "172.253.172.120:81"
+          ],
+          "value": [
+            "172.253.172.120:81"
+          ]
+        },
+        "datasource": "Prometheus-Qy",
+        "definition": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\", module=\"$module\"}, upstream)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "实例",
+        "multi": true,
+        "name": "instance",
+        "options": [],
+        "query": {
+          "query": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\", module=\"$module\"}, upstream)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": "Prometheus-Qy",
+        "definition": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\", module=\"$module\", upstream=~\"$instance\"}, request)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "服务",
+        "multi": true,
+        "name": "service",
+        "options": [],
+        "query": {
+          "query": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\", module=\"$module\", upstream=~\"$instance\"}, request)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "//ibps?/(.*?)/.*/",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "投行项目管理系统-接口",
+  "uid": "lXl0NzvIz",
+  "version": 15
+}
