@@ -15,12 +15,12 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 46,
-  "iteration": 1701941103690,
+  "id": 135,
+  "iteration": 1702957517518,
   "links": [],
   "panels": [
     {
-      "datasource": "Prometheus-Qy",
+      "datasource": "qy-team",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -98,14 +98,14 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m]))",
+          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m]))",
           "interval": "",
           "legendFormat": "今日",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m] offset 1d))",
+          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m] offset 1d))",
           "hide": false,
           "interval": "",
           "legendFormat": "昨日",
@@ -113,7 +113,7 @@
         },
         {
           "exemplar": true,
-          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m] offset 7d))",
+          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m] offset 7d))",
           "hide": false,
           "interval": "",
           "legendFormat": "上周",
@@ -124,7 +124,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus-Qy",
+      "datasource": "qy-team",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -202,14 +202,14 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m]))",
+          "expr": "sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m]))",
           "interval": "",
           "legendFormat": "今日",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m] offset 1d))",
+          "expr": "sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m] offset 1d))",
           "hide": false,
           "interval": "",
           "legendFormat": "昨日",
@@ -217,7 +217,7 @@
         },
         {
           "exemplar": true,
-          "expr": "sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m] offset 7d))",
+          "expr": "sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m] offset 7d))",
           "hide": false,
           "interval": "",
           "legendFormat": "上周",
@@ -228,7 +228,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus-Qy",
+      "datasource": "qy-team",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -278,7 +278,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "histogram_quantile(0.90, sum(rate(entnglog_http_upstream_time_seconds_hist_bucket{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m])) by (le))",
+          "expr": "histogram_quantile(0.90, sum(rate(entnglog_http_upstream_time_seconds_hist_bucket{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m])) by (le))",
           "hide": false,
           "interval": "",
           "legendFormat": "",
@@ -291,7 +291,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus-Qy",
+      "datasource": "qy-team",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -341,7 +341,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "histogram_quantile(0.99, sum(rate(entnglog_http_upstream_time_seconds_hist_bucket{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m])) by (le))",
+          "expr": "histogram_quantile(0.99, sum(rate(entnglog_http_upstream_time_seconds_hist_bucket{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m])) by (le))",
           "hide": false,
           "interval": "",
           "legendFormat": "",
@@ -354,7 +354,7 @@
       "type": "stat"
     },
     {
-      "datasource": "Prometheus-Qy",
+      "datasource": "qy-team",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -432,7 +432,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(rate(entnglog_http_upstream_time_seconds_sum{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m])) by (request) / sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m])) by (request)",
+          "expr": "sum(rate(entnglog_http_upstream_time_seconds_sum{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m])) by (request) / sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m])) by (request)",
           "interval": "",
           "legendFormat": "{{request}}",
           "refId": "A"
@@ -444,7 +444,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus-Qy",
+      "datasource": "qy-team",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -522,14 +522,14 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", request=~\".*$service.*\",status!~\"20\\\\d\"}[10m])) / sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m]))",
+          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", request=~\".*$service.*\",status!~\"20\\\\d\"}[10m])) / sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m]))",
           "interval": "",
           "legendFormat": "今日",
           "refId": "A"
         },
         {
           "exemplar": true,
-          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", request=~\".*$service.*\",status!~\"20\\\\d\"}[10m] offset 1d)) / sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m] offset 1d))",
+          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", request=~\".*$service.*\",status!~\"20\\\\d\"}[10m] offset 1d)) / sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m] offset 1d))",
           "hide": false,
           "interval": "",
           "legendFormat": "昨日",
@@ -537,7 +537,7 @@
         },
         {
           "exemplar": true,
-          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", request=~\".*$service.*\",status!~\"20\\\\d\"}[10m] offset 7d)) / sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m] offset 7d))",
+          "expr": "sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", request=~\".*$service.*\",status!~\"20\\\\d\"}[10m] offset 7d)) / sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m] offset 7d))",
           "hide": false,
           "interval": "",
           "legendFormat": "上周",
@@ -550,7 +550,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus-Qy",
+      "datasource": "qy-team",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -598,7 +598,8 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "topk(5, sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[60m])) by (request))",
+          "expr": "topk(5, sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[60m])) by (request))",
+          "instant": true,
           "interval": "",
           "legendFormat": "{{request}}",
           "refId": "A"
@@ -610,7 +611,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": "Prometheus-Qy",
+      "datasource": "qy-team",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -659,7 +660,8 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "topk(5, sum(rate(entnglog_http_upstream_time_seconds_sum{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[60m])) by (request) / sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[60m])) by (request) )",
+          "expr": "topk(5, sum(rate(entnglog_http_upstream_time_seconds_sum{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[60m])) by (request) / sum(rate(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[60m])) by (request) )",
+          "instant": true,
           "interval": "",
           "legendFormat": "{{request}}",
           "refId": "A"
@@ -671,7 +673,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": "Prometheus-Qy",
+      "datasource": "qy-team",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -719,7 +721,8 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "topk(5, sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", status!~\"20\\\\d\"}[10m])) by (request) / sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m])) by (request))",
+          "expr": "topk(5, sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", status!~\"20\\\\d\"}[10m])) by (request) / sum(increase(entnglog_http_upstream_time_seconds_count{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\"}[10m])) by (request))",
+          "instant": true,
           "interval": "",
           "legendFormat": "{{request}}",
           "refId": "A"
@@ -731,7 +734,7 @@
       "type": "bargauge"
     },
     {
-      "datasource": "Prometheus-Qy",
+      "datasource": "qy-team",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -809,7 +812,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "histogram_quantile(0.90, sum(rate(entnglog_http_upstream_time_seconds_hist_bucket{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", request=~\".*$service.*\"}[10m])) by (request,le))",
+          "expr": "histogram_quantile(0.90, sum(rate(entnglog_http_upstream_time_seconds_hist_bucket{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\", request=~\".*$service.*\"}[10m])) by (request,le))",
           "hide": false,
           "interval": "",
           "legendFormat": "{{request}}",
@@ -822,7 +825,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": "Prometheus-Qy",
+      "datasource": "qy-team",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -900,7 +903,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "histogram_quantile(0.99, sum(rate(entnglog_http_upstream_time_seconds_hist_bucket{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m])) by (request,le))",
+          "expr": "histogram_quantile(0.99, sum(rate(entnglog_http_upstream_time_seconds_hist_bucket{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\",module=\"$module\", upstream=~\"$instance\",request=~\".*$service.*\"}[10m])) by (request,le))",
           "hide": false,
           "interval": "",
           "legendFormat": "{{request}}",
@@ -925,8 +928,8 @@
           "text": "威新",
           "value": "威新"
         },
-        "datasource": "Prometheus-Qy",
-        "definition": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\"}, idc)",
+        "datasource": "qy-team",
+        "definition": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"xxx系统\"}, idc)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -936,34 +939,7 @@
         "name": "center",
         "options": [],
         "query": {
-          "query": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\"}, idc)",
-          "refId": "StandardVariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "type": "query"
-      },
-      {
-        "allValue": null,
-        "current": {
-          "selected": false,
-          "text": "backend",
-          "value": "backend"
-        },
-        "datasource": "Prometheus-Qy",
-        "definition": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\"}, module)",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": false,
-        "label": "模块",
-        "multi": false,
-        "name": "module",
-        "options": [],
-        "query": {
-          "query": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\"}, module)",
+          "query": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"xxx系统\"}, idc)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
@@ -976,25 +952,21 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": [
-            "172.253.172.120:81"
-          ],
-          "value": [
-            "172.253.172.120:81"
-          ]
+          "text": "backend",
+          "value": "backend"
         },
-        "datasource": "Prometheus-Qy",
-        "definition": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\", module=\"$module\"}, upstream)",
+        "datasource": "qy-team",
+        "definition": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\"}, module)",
         "description": null,
         "error": null,
         "hide": 0,
-        "includeAll": true,
-        "label": "实例",
-        "multi": true,
-        "name": "instance",
+        "includeAll": false,
+        "label": "模块",
+        "multi": false,
+        "name": "module",
         "options": [],
         "query": {
-          "query": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\", module=\"$module\"}, upstream)",
+          "query": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\"}, module)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
@@ -1014,8 +986,39 @@
             "$__all"
           ]
         },
-        "datasource": "Prometheus-Qy",
-        "definition": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\", module=\"$module\", upstream=~\"$instance\"}, request)",
+        "datasource": "qy-team",
+        "definition": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\", module=\"$module\"}, upstream)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "实例",
+        "multi": true,
+        "name": "instance",
+        "options": [],
+        "query": {
+          "query": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\", module=\"$module\"}, upstream)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": [
+            "project"
+          ],
+          "value": [
+            "project"
+          ]
+        },
+        "datasource": "qy-team",
+        "definition": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\", module=\"$module\", upstream=~\"$instance\"}, request)",
         "description": null,
         "error": null,
         "hide": 0,
@@ -1025,7 +1028,7 @@
         "name": "service",
         "options": [],
         "query": {
-          "query": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"投行项目管理系统\", idc=\"$center\", module=\"$module\", upstream=~\"$instance\"}, request)",
+          "query": "label_values(entnglog_http_response_count_total{job=\"企业业务开发团队\", system=\"xxx系统\", idc=\"$center\", module=\"$module\", upstream=~\"$instance\"}, request)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
@@ -1037,12 +1040,12 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "投行项目管理系统-接口",
-  "uid": "lXl0NzvIz",
-  "version": 15
+  "title": "xxx系统-接口监控",
+  "uid": "7WQuliOIk",
+  "version": 7
 }
